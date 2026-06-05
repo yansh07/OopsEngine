@@ -1,0 +1,1 @@
+#the entry point - initializes fastapi and includes routers
