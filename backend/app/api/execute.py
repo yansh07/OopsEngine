@@ -3,6 +3,9 @@
 import asyncio
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
+from typing import Optional, List
+from sqlalchemy import select
+from uuid import UUID
 
 from app.db.database import AsyncSessionLocal
 from app.db.models import Execution, ExecutionStatus
@@ -45,3 +48,16 @@ async def submit_code(request: CodeSubmitRequest, db: AsyncSession = Depends(get
     await db.refresh(new_execution)
 
     return new_execution
+
+@router.get("/history/{user_id}", response_model=List[ExecutionResponse])
+async def get_execution_history(user_id: UUID, db: AsyncSession = Depends(get_db)):
+    query = (
+        select(Execution)
+        .where(Execution.user_id == user_id)
+        .order_by(Execution.created_at.desc())
+        .limit(20)
+    )
+    result = await db.execute(query)
+    exectuions = result.scalars().all()
+
+    return exectuions
