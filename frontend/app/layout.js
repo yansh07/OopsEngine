@@ -23,13 +23,16 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <head>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+      </head>
       <body className="min-h-full flex flex-col">
-        <ClerkProvider>
-          <header className="flex justify-between items-center p-4 border-b">
-            <Show when="signed-in">
-              <UserButton />
-            </Show>
-          </header>
+        <ClerkProvider
+          signInForceRedirectUrl="/dashboard"
+          signInFallbackRedirectUrl="/dashboard"
+          signUpForceRedirectUrl="/dashboard"
+          signUpFallbackRedirectUrl="/dashboard"
+        >
           {children}
         </ClerkProvider>
       </body>

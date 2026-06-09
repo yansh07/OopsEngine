@@ -1,4 +1,5 @@
 import { SignUp } from "@clerk/nextjs";
+import Link from "next/link";
 import "./page.css";
 
 export default function SignUpPage() {
@@ -20,9 +21,16 @@ export default function SignUpPage() {
             <h1>Create Account</h1>
             <p>Join OopsEngine and start coding</p>
           </div>
-          <SignUp />
+          <SignUp
+            routing="path"
+            signInUrl="/sign-in"
+            forceRedirectUrl="/dashboard"
+            fallbackRedirectUrl="/dashboard"
+          />
           <div className="auth-footer">
-            <p>Already have an account? <a href="/sign-in">Sign in instead</a></p>
+            <p>
+              Already have an account? <Link href="/sign-in">Sign in instead</Link>
+            </p>
           </div>
         </div>
       </div>
