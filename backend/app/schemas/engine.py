@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional
 from uuid import UUID
+from datetime import datetime
 
 class CodeSubmitRequest(BaseModel):
     user_id: UUID
@@ -13,6 +14,7 @@ class ExecutionResponse(BaseModel):
     stdout: Optional[str] = None
     stderr: Optional[str] = None
     execution_time_ms: Optional[int] = None
+    created_at: datetime
 
-    class config:
+    class Config:
         from_attributes = True

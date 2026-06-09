@@ -5,6 +5,9 @@ from jwt import PyJWKClient
 from fastapi import HTTPException, Security
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 CLERK_JWKS_URL = os.getenv("CLERK_JWKS_URL")
 
