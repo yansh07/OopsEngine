@@ -1,6 +1,6 @@
 #request/response shapes (CodeSubmitRequest)
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr
 from uuid import UUID
 from datetime import datetime
 
@@ -15,5 +15,4 @@ class UserResponse(BaseModel):
     email: EmailStr
     created_at: datetime
 
-    class config:
-        from_attritbutes = True #sqlalchemy ORM objects ko directly JSON mein convert karne ke liye
+    model_config = ConfigDict(from_attributes=True) #sqlalchemy ORM objects ko directly JSON mein convert karne ke liye

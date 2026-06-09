@@ -11,6 +11,7 @@ from app.db.database import AsyncSessionLocal
 from app.db.models import Execution, ExecutionStatus
 from app.schemas.engine import CodeSubmitRequest, ExecutionResponse
 from app.services.docker_runner import DockerRunner
+from app.core.security import verify_user_token
 
 router = APIRouter()
 runner = DockerRunner()
@@ -20,7 +21,7 @@ async def get_db():
         yield session
 
 @router.post("/", response_model=ExecutionResponse)
-async def submit_code(request: CodeSubmitRequest, db: AsyncSession = Depends(get_db)):
+async def submit_code(request: CodeSubmitRequest, db: AsyncSession = Depends(get_db), clerk_id: str = Depends(verify_user_token)):
     if request.language.lower() != "python":
         raise HTTPException(status_code=400, detail="Only Python is Supported Right Now!!")
     
