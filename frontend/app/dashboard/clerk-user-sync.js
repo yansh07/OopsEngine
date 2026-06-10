@@ -33,7 +33,7 @@ export default function ClerkUserSync() {
           return;
         }
 
-        await fetch(`${API_BASE_URL}/api/auth/sync`, {
+        await fetch(`https://${process.env.NEXT_PUBLIC_API_URL}/api/auth/sync`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
