@@ -7,7 +7,7 @@ app = FastAPI(title="OopsEngine API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://oopsengine.vercel.app/"],
+    allow_origins=["https://oopsengine.vercel.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
