@@ -3,7 +3,9 @@
 import { useEffect, useRef } from "react";
 import { useAuth, useUser } from "@clerk/nextjs";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL 
+  ? `https://${process.env.NEXT_PUBLIC_API_BASE_URL}` 
+  : "http://localhost:8000";
 
 export default function ClerkUserSync() {
   const { isLoaded, isSignedIn, getToken } = useAuth();
