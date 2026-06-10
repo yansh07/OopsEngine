@@ -10,12 +10,12 @@ from uuid import UUID
 from app.db.database import AsyncSessionLocal
 from app.db.models import Execution, ExecutionStatus
 from app.schemas.engine import CodeSubmitRequest, ExecutionResponse
-from app.services.docker_runner import DockerRunner
+# from app.services.docker_runner import DockerRunner
 from app.core.security import verify_user_token
 from app.worker import run_code_task
 
 router = APIRouter()
-runner = DockerRunner()
+# runner = DockerRunner()
 
 async def get_db():
     async with AsyncSessionLocal() as session:
