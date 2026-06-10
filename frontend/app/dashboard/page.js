@@ -27,7 +27,7 @@ export default function Dashboard() {
   // 3. API Call: Fetch Execution History (Real Data)
   async function fetchHistory(userId) {
     try {
-      const response = await fetch(`http://localhost:8000/api/execute/history/${userId}`);
+      const response = await fetch(`http://${process.env.NEXT_PUBLIC_API_URL}/api/execute/history/${userId}`);
       if (!response.ok) throw new Error("History fetch failed");
       const data = await response.json();
       setHistory(data);
@@ -47,7 +47,7 @@ export default function Dashboard() {
             throw new Error("Missing Clerk session token");
           }
 
-          const response = await fetch("http://localhost:8000/api/auth/sync", {
+          const response = await fetch(`http://${process.env.NEXT_PUBLIC_API_URL}/api/auth/sync`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -84,7 +84,7 @@ export default function Dashboard() {
     try {
       const token = await getToken();
       // 1. Initial Submission
-      const response = await fetch("http://localhost:8000/api/execute/", {
+      const response = await fetch(`http://${process.env.NEXT_PUBLIC_API_URL}/api/execute/`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
         body: JSON.stringify({
@@ -105,7 +105,7 @@ export default function Dashboard() {
         await new Promise(resolve => setTimeout(resolve, 1000)); 
         
         // Fetch the updated status
-        const pollResponse = await fetch(`http://localhost:8000/api/execute/${result.id}`, {
+        const pollResponse = await fetch(`http://${process.env.NEXT_PUBLIC_API_URL}/api/execute/${result.id}`, {
             headers: {
                 "Authorization": `Bearer ${token}`
             }

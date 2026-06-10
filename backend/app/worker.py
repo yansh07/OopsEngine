@@ -7,8 +7,8 @@ from app.services.docker_runner import DockerRunner
 
 celery_app = Celery(
     "execution_worker",
-    broker="redis://localhost:6379/0",
-    backend="redis://localhost:6379/0"
+    broker="redis://redis:6379/0",
+    backend="redis://redis:6379/0"
 )
 
 runner = DockerRunner()
