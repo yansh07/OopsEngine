@@ -11,8 +11,6 @@ celery_app = Celery(
     backend="redis://redis:6379/0"
 )
 
-runner = DockerRunner()
-
 #pure, blocking, sync db update
 def update_execution_in_db_sync(execution_id: str, result: str):
     with SyncSessionLocal() as db:
@@ -29,6 +27,7 @@ def update_execution_in_db_sync(execution_id: str, result: str):
 @celery_app.task(name="execute_code_task")
 def run_code_task(execution_id: str, code: str):
     #run docker 
+    runner = DockerRunner()
     result = runner.execute_python_sync(code)
 
     #update db in sync
