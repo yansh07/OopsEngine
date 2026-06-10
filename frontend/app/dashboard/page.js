@@ -74,26 +74,19 @@ export default function Dashboard() {
   // 4. API Call: Submit Code for Execution (The Main Engine)
   const runCode = async () => {
     if (!dbUserId) {
-      setOutput("[SYSTEM ERROR]: Core handshake incomplete. Please retry.");
+      setOutput("[SYSTEM ERROR]: Core handshake incomplete.");
       return;
     }
     
     setIsRunning(true);
-    setOutput(""); // Clear terminal
+    setOutput("[SYSTEM]: Code submitted. Waiting for engine..."); 
 
     try {
       const token = await getToken();
-
-      if (!token) {
-        throw new Error("Missing Clerk session token");
-      }
-
+      // 1. Initial Submission
       const response = await fetch("http://localhost:8000/api/execute/", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
         body: JSON.stringify({
           user_id: dbUserId,
           language: "python",
@@ -101,20 +94,36 @@ export default function Dashboard() {
         })
       });
 
-      const result = await response.json();
+      let result = await response.json();
 
-      // UI Update based on API response
+      // 2. THE POLLING LOOP
+      // Keep asking the server "Is it done?" every 1 second while status is QUEUED or RUNNING
+      while (result.status === "QUEUED" || result.status === "RUNNING") {
+        setOutput(`[SYSTEM]: Status is ${result.status}. Container booting...`);
+        
+        // Wait 1 second before asking again
+        await new Promise(resolve => setTimeout(resolve, 1000)); 
+        
+        // Fetch the updated status
+        const pollResponse = await fetch(`http://localhost:8000/api/execute/${result.id}`, {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+        result = await pollResponse.json();
+      }
+
+      // 3. Engine Finished. Print the final results.
       if (result.status === "SUCCESS") {
         setOutput(result.stdout || "[SYSTEM]: Execution finished with no output.");
       } else if (result.status === "RUNTIME_ERROR" || result.status === "TIMEOUT") {
         setOutput(result.stderr || `[SYSTEM ERROR]: ${result.status} triggered.`);
       }
 
-      // History update karo real time mein
       fetchHistory(dbUserId);
 
     } catch (error) {
-      setOutput(`[SYSTEM ERROR]: Failed to communicate with engine. ${error.message}`);
+      setOutput(`[SYSTEM ERROR]: Engine communication failure. ${error.message}`);
     } finally {
       setIsRunning(false);
     }
